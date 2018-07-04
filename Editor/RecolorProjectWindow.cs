@@ -13,10 +13,10 @@ using UnityEditor;
 
 
 [InitializeOnLoad]
-public class RecolorHierarchyWindow
+public class RecolorProjectWindow
 {
 
-    static RecolorHierarchyWindow()
+    static RecolorProjectWindow()
     {
         EditorApplication.projectWindowItemOnGUI += RecolorLineFolder;
     }
@@ -32,7 +32,7 @@ public class RecolorHierarchyWindow
                 return;
             if(setColorBaseForName(GUID, rect, "Sprite", Color.red))
                 return;
-            if(setColorBaseForName(GUID, rect, "Prefab", new Color(.5f, 0f, 1f)))
+            if(setColorBaseForName(GUID, rect, "Prefab", Color.blue))
                 return;
         }
     }
