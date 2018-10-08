@@ -6,7 +6,7 @@
 // SPECIAL NOTES   : inspired by Immanuel-Scholz's comment here: https://feedback.unity3d.com/suggestions/ability-to-change-the-folders-co 
 // ===============================
 // Change History:
-//
+//  - 08.10.2018: changing the default skin did not work in newer versions of unity. Created new skin and applied it to the box.
 //==================================
 
 using UnityEngine;
@@ -35,6 +35,12 @@ public class RecolorProjectWindow
                 return;
             if (setColorBaseForName(GUID, rect, "Prefab", Color.blue))
                 return;
+            if (setColorBaseForName(GUID, rect, "Audio", Color.cyan))
+                return;
+            if (setColorBaseForName(GUID, rect, "Material", Color.black))
+                return;
+            if (setColorBaseForName(GUID, rect, "Font", Color.magenta))
+                return;
         }
     }
 
@@ -52,9 +58,11 @@ public class RecolorProjectWindow
                 Texture2D texture = new Texture2D(1, 1);
                 Color c = new Color(folderColor.r, folderColor.g, folderColor.b, .1f);
                 texture.SetPixel(0, 0, c);
+                texture.alphaIsTransparency = true;
                 texture.Apply();
-                GUI.skin.box.normal.background = texture;
-                GUI.Box(rect, GUIContent.none);
+                GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+                boxStyle.normal.background = texture;
+                GUI.Box(rect,"",boxStyle);
                 return true;
             }
         }
