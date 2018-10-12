@@ -14,10 +14,10 @@ using UnityEditor;
 
 
 [InitializeOnLoad]
-public class RecolorProjectWindow
+public class RecolorProjectWindowFolders
 {
 
-    static RecolorProjectWindow()
+	static RecolorProjectWindowFolders()
     {
         EditorApplication.projectWindowItemOnGUI += RecolorLineFolder;
     }
