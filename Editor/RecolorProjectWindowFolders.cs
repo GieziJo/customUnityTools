@@ -7,6 +7,7 @@
 // ===============================
 // Change History:
 //  - 08.10.2018: changing the default skin did not work in newer versions of unity. Created new skin and applied it to the box.
+//  - 13.02.2020: applying the box skin does not work in unity 2019.3: applying a new skin. Optimised the function a bit
 //==================================
 
 using UnityEngine;
@@ -16,56 +17,61 @@ using UnityEditor;
 [InitializeOnLoad]
 public class RecolorProjectWindowFolders
 {
+	static Texture2D texture = new Texture2D(1, 1);
+	
+	static GUIStyle boxStyle = new GUIStyle();
+	static private string pth;
+	static private Rect rect;
 
 	static RecolorProjectWindowFolders()
-    {
-        EditorApplication.projectWindowItemOnGUI += RecolorLineFolder;
-    }
+	{
+		EditorApplication.projectWindowItemOnGUI += RecolorLineFolder;
+	}
 
-    static void RecolorLineFolder(string GUID, Rect rect)
-    {
-        if (Event.current.type == EventType.Repaint)
-        {
-            // Specify folders and colors to be affected here
-            if (setColorBaseForName(GUID, rect, "Scene", Color.yellow))
-                return;
-            if (setColorBaseForName(GUID, rect, "Script", Color.green))
-                return;
-            if (setColorBaseForName(GUID, rect, "Sprite", Color.red))
-                return;
-            if (setColorBaseForName(GUID, rect, "Prefab", Color.blue))
-                return;
-            if (setColorBaseForName(GUID, rect, "Audio", Color.cyan))
-                return;
-            if (setColorBaseForName(GUID, rect, "Material", Color.black))
-                return;
-            if (setColorBaseForName(GUID, rect, "Font", Color.magenta))
-                return;
-        }
-    }
+	static void RecolorLineFolder(string GUID, Rect focusedRect)
+	{
+		if (Event.current.type == EventType.Repaint)
+		{
+			pth = AssetDatabase.GUIDToAssetPath(GUID);
+			rect = focusedRect;
+			// Specify folders and colors to be affected here
+			if (setColorBaseForName("Scene", Color.yellow))
+				return;
+			if (setColorBaseForName("Animation", Color.white))
+				return;
+			if (setColorBaseForName("Script", Color.green))
+				return;
+			if (setColorBaseForName("Sprite", Color.red))
+				return;
+			if (setColorBaseForName("Prefab", Color.blue))
+				return;
+			if (setColorBaseForName("Audio", Color.cyan))
+				return;
+			if (setColorBaseForName("Material", Color.black))
+				return;
+			if (setColorBaseForName("Font", Color.magenta))
+				return;
+		}
+	}
 
-    static bool setColorBaseForName(string GUID, Rect rect, string topFolderName, Color folderColor)
-    {
-        string pth = AssetDatabase.GUIDToAssetPath(GUID);
-        if (pth.Contains(topFolderName))
-        {
+	static bool setColorBaseForName(string topFolderName, Color folderColor)
+	{
+		if (pth.Contains(topFolderName))
+		{
+			string[] pths = pth.Split("/"[0]);
+			string assetName = pths[pths.Length - 1];
 
-            string[] pths = pth.Split("/"[0]);
-            string assetName = pths[pths.Length - 1];
-
-            if (!assetName.Contains("."))
-            {
-                Texture2D texture = new Texture2D(1, 1);
-                Color c = new Color(folderColor.r, folderColor.g, folderColor.b, .1f);
-                texture.SetPixel(0, 0, c);
-                texture.alphaIsTransparency = true;
-                texture.Apply();
-                GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-                boxStyle.normal.background = texture;
-                GUI.Box(rect,"",boxStyle);
-                return true;
-            }
-        }
-        return false;
-    }
+			if (!assetName.Contains("."))
+			{
+				Color c = new Color(folderColor.r, folderColor.g, folderColor.b, .3f);
+				texture.SetPixel(0, 0, c);
+				texture.alphaIsTransparency = true;
+				texture.Apply();
+				boxStyle.normal.background = texture;
+				GUI.Box(rect, "", boxStyle);
+				return true;
+			}
+		}
+		return false;
+	}
 }
